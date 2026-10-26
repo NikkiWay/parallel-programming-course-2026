@@ -11,22 +11,27 @@ public final class Shared<T> {
 
     /** Чтение с паузой перед ним. */
     public T get() {
-        throw new UnsupportedOperationException("TODO этап 1: Shared.get");
+        Scheduler.Worker worker = Scheduler.startOperation(Scheduler.ALWAYS);
+        T observed = value;
+        worker.finishOperation(name + " -> " + observed);
+        return observed;
     }
 
     /** Запись с паузой перед ней. */
-    public void set(T v) {
-        throw new UnsupportedOperationException("TODO этап 1: Shared.set");
+    public void set(T newValue) {
+        Scheduler.Worker worker = Scheduler.startOperation(Scheduler.ALWAYS);
+        value = newValue;
+        worker.finishOperation(name + " = " + newValue);
     }
 
     /** То же, что get(): планировщик не моделирует порядки памяти. */
     public T getAcquire() {
-        throw new UnsupportedOperationException("TODO этап 1: Shared.getAcquire");
+        return get();
     }
 
     /** То же, что set(v). */
-    public void setRelease(T v) {
-        throw new UnsupportedOperationException("TODO этап 1: Shared.setRelease");
+    public void setRelease(T newValue) {
+        set(newValue);
     }
 
     /** Чтение без паузы и без лога: для проверок после прогона и условий await. */
